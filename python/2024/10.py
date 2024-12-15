@@ -1,81 +1,55 @@
 import sys
 from time import perf_counter
-
-alternatives={
-    (-1,0),
-    (0,1),
-    (1,0),
-    (0,-1)
-}
+from matrix import Matrix
 
 with open('10.input', 'r') as file:
     din = file.read().splitlines()
+matrix_data = [[int(x) for x in line.strip()] for line in din]
+matrix_size = (len(matrix_data), len(matrix_data[0]))
+matrix = Matrix(matrix_size)
 
+for i, line in enumerate(matrix_data):
+    for j, value in enumerate(line):
+        matrix[(i, j)] = value
+
+
+def dfs(matrix, i, j, target, prev=-1, count_paths=False):
+    if not matrix._is_in_bounds((i, j)):
+        return set() if not count_paths else 0
+    value = matrix[(i, j)]
+    if value != prev + 1:
+        return set() if not count_paths else 0
+    if value == target:
+        return {(i, j)} if not count_paths else 1
+    result = set() if not count_paths else 0
+    for neighbor_value, (ni, nj) in matrix.neighbors((i, j)):
+        if count_paths:
+            result += dfs(matrix, ni, nj, target, value, count_paths)
+        else:
+            result.update(dfs(matrix, ni, nj, target, value))
+    return result
+
+def count_paths(matrix, target, count_paths=False):
+    path_count = 0
+    for (i, j), value in matrix:
+        if value == 0:
+            if count_paths:
+                path_count += dfs(matrix, i, j, target, count_paths=True)
+            else:
+                path_count += len(dfs(matrix, i, j, target))
+    return path_count
+
+
+# Part 1
 p1_start = perf_counter()
-def dfs(mat, i,j,t, prev=-1):
-    #print("dfs", i,j,prev)
-    if i<0 or i>=len(mat) or j<0 or j>=len(mat[i]):
-        return set()
-    v = mat[i][j]
-    if v!= prev+1:
-        return set()
-    if v == t:
-        return {(i,j)}
-    r = set()
-    for a in alternatives:
-        r=r.union(dfs(mat,i+a[0], j+a[1], t,v))
-    return r
-
-mat = [[int(x) for x in l.strip()] for l in din]
-#print(mat)
-s = 0
-for i in range(len(mat)):
-    for j in range(len(mat[i])):
-        if mat[i][j]==0:
-            #print("call ",i,j)
-            r=dfs(mat, i,j,9)
-            #print("r",r)
-            s+=len(r)
-
-print(f"Part One: {s}")
+part_one_result = count_paths(matrix, 9)
 p1_end = perf_counter()
-p1_elapsed = p1_end - p1_start
+print(f"Part One: {part_one_result}")
+print(f"Elapsed Time (Part One): {p1_end - p1_start:0.2f}s")
 
-
-# part 2
+# Part 2
 p2_start = perf_counter()
-def dfs(mat, i,j,t, prev=-1):
-    #print("dfs", i,j,prev)
-    if i<0 or i>=len(mat) or j<0 or j>=len(mat[i]):
-        return 0
-    v = mat[i][j]
-    if v!= prev+1:
-        return 0
-    if v == t:
-        return 1
-    r = 0
-    for a in alternatives:
-        r+=dfs(mat,i+a[0], j+a[1], t,v)
-    return r
-
-mat = [[int(x) for x in l.strip()] for l in din]
-#print(mat)
-s = 0
-for i in range(len(mat)):
-    for j in range(len(mat[i])):
-        if mat[i][j]==0:
-            #print("call ",i,j)
-            r=dfs(mat, i,j,9)
-            #print("r",r)
-            s+=r
-
-print(f"Part Two: {s}")
+part_two_result = count_paths(matrix, 9, count_paths=True)
 p2_end = perf_counter()
-p2_elapsed = p2_end - p2_start
-
-
-
-
-
-print(f"Elapsed Time (Part One): {p1_elapsed:0.2f}s")
-print(f"Elapsed Time (Part Two): {p2_elapsed:0.2f}s")
+print(f"Part Two: {part_two_result}")
+print(f"Elapsed Time (Part Two): {p2_end - p2_start:0.2f}s")
