@@ -82,4 +82,3 @@ class Matrix:
                     got = self.get([pos[0] + i, pos[1] + j])
                     if got is not None:
                         yield got, [pos[0] + i, pos[1] + j]
-
