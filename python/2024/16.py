@@ -7,7 +7,7 @@ MOVE_COST = 1
 TURN_COST = 1000
 
 def get_neighbors(pos, direction, maze):
-    # Possible movements: move forward, turn left, turn right
+    # Movements: move, turn left, turn right
     directions = ['N', 'E', 'S', 'W']
     dir_idx = directions.index(direction)
     movements = []
@@ -64,9 +64,9 @@ def find_minimum_score(maze, start_pos, end_pos, part_2 = False):
             elif total_cost == visited[next_state]:
                 # Found an alternative path with the same minimal cost
                 predecessors[next_state].append(state)
-                # already visted, no heappush
+                # already visited, no heappush
 
-    # find minmal path
+    # find minimal path
     min_total_cost = 9999999999
     end_states = []
     for direction in directions:
