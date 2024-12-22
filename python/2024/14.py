@@ -1,5 +1,4 @@
 import os
-from typing import List, Tuple
 import re
 from time import perf_counter, sleep
 from copy import deepcopy
@@ -11,9 +10,9 @@ def cls():
     os.system('cls' if os.name=='nt' else 'clear')
 
 class Robot:
-    def __init__(self, position: Tuple[int, int], velocity: Tuple[int, int]):
-        self.position: Tuple[int, int] = position
-        self.velocity: Tuple[int, int] = velocity
+    def __init__(self, position: tuple[int, int], velocity: tuple[int, int]):
+        self.position: tuple[int, int] = position
+        self.velocity: tuple[int, int] = velocity
 
     @classmethod
     def from_line(cls, line: str) -> "Robot":
@@ -32,7 +31,7 @@ class Robot:
         y = (y + vy) % MAP_HEIGHT
         self.position = (x, y)
 
-def part1(robots: List[Robot]) -> int:
+def part1(robots: list[Robot]) -> int:
     robots = deepcopy(robots)  # To avoid modifying the original list
     mid_x = MAP_WIDTH // 2   # 50
     mid_y = MAP_HEIGHT // 2  # 51
@@ -57,7 +56,7 @@ def part1(robots: List[Robot]) -> int:
     safety_factor = q1 * q2 * q3 * q4
     return safety_factor
 
-def part2(robots: List[Robot]) -> int:
+def part2(robots: list[Robot]) -> int:
     robots = deepcopy(robots)  # To avoid modifying the original list
     t = 0
     last_area = None
@@ -91,7 +90,7 @@ if __name__ == "__main__":
     with open('14.input', 'r') as file:
         din: str = file.read()
         lines = din.strip().split('\n')
-        robots: List[Robot] = [Robot.from_line(line) for line in lines]
+        robots: list[Robot] = [Robot.from_line(line) for line in lines]
 
     # Measure time for Part One
     p1_start = perf_counter()

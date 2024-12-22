@@ -1,8 +1,7 @@
 from time import perf_counter
-from typing import Optional, List
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-def process_n_A(args: tuple[int, int, int, int, int, int, int, int]) -> Optional[int]:
+def process_n_A(args: tuple[int, int, int, int, int, int, int, int]) -> int | None:
     n_A, dx_A, dy_A, dx_B, dy_B, prize_x, prize_y, restrict_range = args
     for n_B in range(restrict_range):
         x = n_A * dx_A + n_B * dx_B
@@ -38,7 +37,7 @@ class Machine:
         self.prize_y += prize_offset
 
 
-    def find_min_cost(self, restrict_range: int = 100) -> Optional[int]:
+    def find_min_cost(self, restrict_range: int = 100) -> int | None:
         """Find the cost to reach the prize coordinates using multi-core processing."""
         dx_A = self.dx_A
         dy_A = self.dy_A
@@ -64,7 +63,7 @@ class Machine:
 
         return None
 
-    def smart_find_min_cost(self) -> Optional[int]:
+    def smart_find_min_cost(self) -> int | None:
         """Find the minimum cost to reach the prize coordinates using Diophantine equations."""
         # spoiled by reddit
         dx_A, dy_A = self.dx_A, self.dy_A
@@ -105,7 +104,7 @@ class Machine:
 
         return cost
 
-def part1(machines: List[Machine], smart: bool) -> int:
+def part1(machines: list[Machine], smart: bool) -> int:
     """Calculate total minimum cost for all machines without prize offset."""
     total_cost = 0
     for machine in machines:
@@ -117,7 +116,7 @@ def part1(machines: List[Machine], smart: bool) -> int:
             total_cost += min_cost
     return total_cost
 
-def part2(machines: List[Machine], smart: bool) -> int:
+def part2(machines: list[Machine], smart: bool) -> int:
     """Calculate total minimum cost for all machines with a prize offset."""
     prize_offset = 10_000_000_000_000
     total_cost = 0
@@ -135,7 +134,7 @@ def part2(machines: List[Machine], smart: bool) -> int:
 with open('13.input', 'r') as file:
     din: str = file.read()
     machines_data = din.strip().split('\n\n')
-    machines: List[Machine] = [Machine(data) for data in machines_data]
+    machines: list[Machine] = [Machine(data) for data in machines_data]
 
 # Measure time for Part One
 p1_start = perf_counter()
